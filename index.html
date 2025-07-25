@@ -1,104 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TCOAAL Dialog Creator</title>
+    <link href="fonts/Faustina-Regular.ttf" rel="stylesheet">
+    <link rel="stylesheet" href="viewer.css">
     <link rel="stylesheet" href="editor.css">
 </head>
 <body>
-    <div class="editor-container">
-        <h1>TCOAAL Dialog Creator</h1>
-
-        <!-- Configuration Section -->
-        <div class="section">
-            <button class="section-header collapsible active" onclick="toggleSection(this)">
-                Configuration & Glitch Settings
-            </button>
-            <div class="section-content" style="display: none;">
-                <div class="subsection">
-                    <h3>General Configuration</h3>
-                    <div class="form-group">
-                        <label>Show Controls:</label>
-                        <input type="checkbox" id="configShowControls" checked>
-                    </div>
-                    <div class="form-group">
-                        <label>Show Debug:</label>
-                        <input type="checkbox" id="configShowDebug" checked>
-                    </div>
-                </div>
-
-                <div class="subsection">
-                    <h3>Glitch Effect</h3>
-                    <div class="form-group">
-                        <label>Scrambled Color:</label>
-                        <input type="color" id="glitchScrambledColor" value="#000000">
-                    </div>
-                    <div class="form-group">
-                        <label>Real Color:</label>
-                        <input type="color" id="glitchRealColor" value="#ffffff">
-                    </div>
-                    <div class="form-group">
-                        <label>Change Speed:</label>
-                        <input type="number" id="glitchChangeSpeed" value="50" min="10" max="500">
-                    </div>
-                    <div class="form-group">
-                        <label>Real Probability:</label>
-                        <input type="number" id="glitchRealProbability" value="5" min="0" max="100">
-                    </div>
-                    <div class="form-group">
-                        <label>Auto Start:</label>
-                        <input type="checkbox" id="glitchAutoStart" checked>
-                    </div>
-                    <div class="form-group">
-                        <label>Allowed Characters:</label>
-                        <input type="text" id="glitchCharsAllowed" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789">
-                    </div>
-                </div>
+    <!-- Main game container -->
+    <div class="game-container">
+        <div class="dialog-container" id="dialogContainer">
+            <div class="dialog-content">
+                <div class="dialog-line speaker-line" id="speakerLine"></div>
+                <div class="dialog-line text-line" id="textLine1"></div>
+                <div class="dialog-line text-line" id="textLine2"></div>
             </div>
         </div>
 
-        <!-- Characters Section -->
-        <div class="section">
-            <h2 class="section-title">Characters</h2>
-            <div id="charactersList"></div>
-            <div class="form-group add-character">
-                <input type="text" id="newCharacterName" placeholder="Character name">
-                <input type="color" id="newCharacterColor" value="#ffffff">
-                <button onclick="addCharacter()">Add Character</button>
+    <!-- Controls container -->
+    <div class="controls" id='controlsContainer'>
+        <div class="controls-header">
+            <span class="controls-title">Controls Menu (TAB to toggle)</span>
+            <a href="https://github.com/Kidev/TCOAALDialogCreator" target="_blank" rel="noopener" class="github-link" title="View source on GitHub">
+                <svg class="github-icon" viewBox="0 0 24 24">
+                    <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="controls-grid">
+            <button onclick="openEditor()" title="Edit the dialog" class="editor-btn">Editor</button>
+        </div>
+
+        <div class="nav-controls">
+            <button onclick="dialogFramework.previous()" title="Previous (left arrow)">⬅</button>
+            <button onclick="dialogFramework.next()" title="Next (right arrow, click or space)">➡</button>
+            <button onclick="dialogFramework.reset()" title="Reset">⟲</button>
+        </div>
+    </div>
+
+        <div class="debug-info" id="debugInfo">
+            Scene: 0 / 0
+        </div>
+    </div>
+    <div class="interaction-blocker" id="interactionBlocker"></div>
+
+    <!-- Editor overlay -->
+    <div class="editor-overlay spa-mode" id="editorOverlay" onclick="event.stopPropagation()">
+        <button class="save-button" onclick="runSequence()">✔ Save</button>
+        <button class="overlay-close" onclick="closeEditor()">✕ Close</button>
+
+        <div class="editor-container" onclick="event.stopPropagation()">
+            <h1>TCOAAL Dialog Creator</h1>
+
+            <!-- Configuration Section -->
+            <div class="section">
+                <button class="section-header collapsible active" onclick="toggleSection(this)">
+                    Configuration & Glitch Settings
+                </button>
+                <div class="section-content" style="display: none;">
+                    <div class="subsection">
+                        <h3>General Configuration</h3>
+                        <div class="form-group">
+                            <label>Show Controls:</label>
+                            <input type="checkbox" id="configShowControls" checked>
+                        </div>
+                        <div class="form-group">
+                            <label>Show Debug:</label>
+                            <input type="checkbox" id="configShowDebug" checked>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <h3>Glitch Effect</h3>
+                        <div class="form-group">
+                            <label>Scrambled Color:</label>
+                            <input type="color" id="glitchScrambledColor" value="#000000">
+                        </div>
+                        <div class="form-group">
+                            <label>Real Color:</label>
+                            <input type="color" id="glitchRealColor" value="#ffffff">
+                        </div>
+                        <div class="form-group">
+                            <label>Change Speed:</label>
+                            <input type="number" id="glitchChangeSpeed" value="50" min="10" max="500">
+                        </div>
+                        <div class="form-group">
+                            <label>Real Probability:</label>
+                            <input type="number" id="glitchRealProbability" value="5" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Auto Start:</label>
+                            <input type="checkbox" id="glitchAutoStart" checked>
+                        </div>
+                        <div class="form-group">
+                            <label>Allowed Characters:</label>
+                            <input type="text" id="glitchCharsAllowed" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Characters Section -->
+            <div class="section">
+                <h2 class="section-title">Characters</h2>
+                <div id="charactersList"></div>
+                <div class="form-group add-character">
+                    <input type="text" id="newCharacterName" placeholder="Character name">
+                    <input type="color" id="newCharacterColor" value="#ffffff">
+                    <button onclick="addCharacter()">Add Character</button>
+                </div>
+            </div>
+
+            <!-- Scenes Section -->
+            <div class="section">
+                <h2 class="section-title">Scenes</h2>
+                <div id="scenesList"></div>
+                <button onclick="addScene()" class="success">Add New Scene</button>
+            </div>
+
+            <!-- Actions -->
+            <div class="action-buttons">
+                <!--<button onclick="runSequence()">✔ Save</button>-->
+                <button onclick="downloadSequence()" class="download-sequence">Download sequence.js (advanced users)</button>
             </div>
         </div>
-
-        <!-- Scenes Section -->
-        <div class="section">
-            <h2 class="section-title">Scenes</h2>
-            <div id="scenesList"></div>
-            <button onclick="addScene()" class="success">Add New Scene</button>
-        </div>
-
-        <!-- Actions -->
-        <div class="action-buttons">
-            <button onclick="runInNewTab()">Run in New Tab</button>
-            <button onclick="saveToFile()">Save Project</button>
-            <button onclick="loadFromFile()">Load Project</button>
-        </div>
-
-        <!-- Output Section -->
         <br/>
-        <div class="section">
-            <button class="section-header collapsible" onclick="toggleSection(this)">
-                Generated sequence.js (for advanced users)
-            </button>
-            <div class="section-content" style="display: none;">
-                <textarea id="outputCode" readonly></textarea>
-            </div>
-        </div>
     </div>
 
     <input type="file" id="fileInput" style="display: none;" accept=".json">
 
+    <script src="js/dialog.js"></script>
+    <script src="js/sequence.js"></script>
     <script src="js/editor.js"></script>
+    <script src="js/interface.js"></script>
+
 </body>
 </html>

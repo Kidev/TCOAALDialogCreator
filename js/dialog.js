@@ -187,7 +187,12 @@ class DialogFramework {
         }
 
         try {
-            const audio = new Audio('sounds/' + soundPath);
+            // Check if it's a URL or local file
+            const audioSrc = soundPath.startsWith('http://') || soundPath.startsWith('https://')
+            ? soundPath
+            : 'sounds/' + soundPath;
+
+            const audio = new Audio(audioSrc);
 
             return new Promise((resolve, reject) => {
                 const onCanPlay = () => {
@@ -293,8 +298,11 @@ class DialogFramework {
     }
 
     updateConfig() {
-        document.getElementById('controlsContainer').style.opacity = this.config.showControls ? '1' : '0';
-        document.getElementById('debugInfo').style.opacity = this.config.showDebug ? '1' : '0';
+        const controls = document.getElementById('controlsContainer');
+        const debug = document.getElementById('debugInfo');
+
+        controls.classList.toggle('hidden', !this.config.showControls);
+        debug.style.opacity = this.config.showDebug ? '1' : '0';
     }
 
     addScene(options) {
@@ -333,20 +341,35 @@ class DialogFramework {
         return this;
     }
 
+
     initializeEventListeners() {
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Space') {
+            if (document.getElementById('editorOverlay').classList.contains('active')) {
+                return;
+            }
+
+            if (e.code === 'Space' || e.code === 'ArrowRight') {
                 e.preventDefault();
                 if (this.isTyping) {
                     this.skipText();
                 } else {
                     this.next();
                 }
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                this.previous();
+            } else if (e.code === 'Tab') {
+                e.preventDefault();
+                this.toggleControls();
             }
         });
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.controls')) {
+            if (document.getElementById('editorOverlay').classList.contains('active')) {
+                return;
+            }
+
+            if (!e.target.closest('.controls') && !e.target.closest('.editor-overlay')) {
                 if (this.isTyping) {
                     this.skipText();
                 } else {
@@ -354,6 +377,11 @@ class DialogFramework {
                 }
             }
         });
+    }
+
+    toggleControls() {
+        const controls = document.getElementById('controlsContainer');
+        controls.classList.toggle('hidden');
     }
 
     start() {
@@ -361,7 +389,7 @@ class DialogFramework {
         this.showScene(0);
     }
 
-    async showScene(index) {
+    async showScene(index, force = false) {
         if (index >= this.scenes.length) {
             this.hideDialog();
             return;
@@ -429,7 +457,10 @@ class DialogFramework {
                         // Check if instant transition
                         if (imageFadeOutTime === 0 && scene.imageFadeInTime === 0 &&
                             scene.image === previousScene.image) {
-                            // Same image with instant transition, do nothing
+                            // Same image with instant transition
+                                if (force === true && scene.image !== null && scene.image !== '') {
+                                    this.showImageInstant(scene.image);
+                                }
                             } else if (imageFadeOutTime === 0 && scene.imageFadeInTime === 0) {
                                 this.showImageInstant(scene.image);
                             } else {
@@ -594,7 +625,13 @@ class DialogFramework {
         }
 
         const img = document.createElement('img');
-        img.src = 'img/' + imageSrc;
+
+        if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+            img.src = imageSrc;
+        } else {
+            img.src = 'img/' + imageSrc;
+        }
+
         img.className = `bust-image ${side}`;
 
         if (fadeTime > 0) {
@@ -658,7 +695,18 @@ class DialogFramework {
         }
 
         const img = document.createElement('img');
-        img.src = 'img/' + imageSrc;
+
+        if (imageSrc === '') {
+            img.src = '';
+            return;
+        }
+
+        if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+            img.src = imageSrc;
+        } else {
+            img.src = 'img/' + imageSrc;
+        }
+
         img.className = 'background-image';
 
         if (fadeInTime > 0) {
@@ -699,7 +747,13 @@ class DialogFramework {
         const existingImages = document.querySelectorAll('.background-image.active');
 
         const newImg = document.createElement('img');
-        newImg.src = 'img/' + toImageSrc;
+
+        if (toImageSrc.startsWith('http://') || toImageSrc.startsWith('https://')) {
+            newImg.src = toImageSrc;
+        } else {
+            newImg.src = 'img/' + toImageSrc;
+        }
+
         newImg.className = 'background-image';
         newImg.style.transition = `opacity ${fadeInDuration}ms ease-in-out`;
         newImg.style.opacity = '0';
@@ -751,7 +805,13 @@ class DialogFramework {
         });
 
         const img = document.createElement('img');
-        img.src = 'img/' + imageSrc;
+
+        if (imageSrc.startsWith('http://') || imageSrc.startsWith('https://')) {
+            img.src = imageSrc;
+        } else {
+            img.src = 'img/' + imageSrc;
+        }
+
         img.className = 'background-image active';
         img.style.transition = 'none';
         img.style.opacity = '1';
@@ -1215,13 +1275,26 @@ class DialogFramework {
         }
     }
 
+    previous() {
+        if (this.currentScene < 0) {
+            return;
+        }
+        let currentIndex = this.currentScene;
+        currentIndex--;
+        if (currentIndex < 0) {
+            currentIndex = 0;
+        }
+        this.reset();
+        this.jumpToScene(currentIndex);
+    }
+
     hideDialog() {
         const dialogContainer = document.getElementById('dialogContainer');
         dialogContainer.classList.remove('active');
     }
 
     reset() {
-        this.currentScene = 0;
+        this.currentScene = -1;
         this.isTyping = false;
         this.currentBackgroundImage = null;
         this.currentBustLeft = null;
@@ -1259,7 +1332,7 @@ class DialogFramework {
     jumpToScene(index) {
         if (index >= 0 && index < this.scenes.length) {
             this.currentScene = index;
-            this.showScene(index);
+            this.showScene(index, true);
         }
         return this;
     }

@@ -9,6 +9,8 @@ body {
     background: #000;
     overflow: hidden;
     height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 .game-container {
@@ -16,6 +18,8 @@ body {
     width: 100vw;
     height: 100vh;
     background: #000;
+    margin: 0;
+    padding: 0;
 }
 
 .background-image {
@@ -58,7 +62,7 @@ body {
     bottom: 40px;
     left: 50%;
     transform: translateX(-50%);
-    background-image: url('img/bg_dialog.png');
+    background-image: url('https://i.imgur.com/sQ62x3q.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -111,24 +115,34 @@ body {
     top: 20px;
     left: 20px;
     z-index: 100;
-    background: rgba(0,0,0,0.8);
-    padding: 15px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    border: 1px solid #333;
+    background: rgba(15, 15, 15, 0.95);
+    padding: 16px 20px;
+    border-radius: 12px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    min-width: 280px;
+}
+
+.controls.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
 }
 
 .controls button {
     background: #4a90e2;
     color: white;
     border: none;
-    padding: 10px 18px;
-    margin: 3px;
+    padding: 8px 12px;
+    margin: 2px;
     border-radius: 6px;
     cursor: pointer;
     font-family: 'Faustina', serif;
-    font-size: 0.9em;
+    font-size: 1.2em;
     transition: all 0.3s;
+    min-width: 40px;
 }
 
 .controls button:hover {
@@ -140,6 +154,64 @@ body {
     background: #666;
     cursor: not-allowed;
     transform: none;
+}
+
+.controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.controls-title {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.75em;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.github-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.github-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.github-icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    align-items: center;
+}
+
+.editor-btn {
+    grid-column: span 2;
+}
+
+.nav-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .debug-info {

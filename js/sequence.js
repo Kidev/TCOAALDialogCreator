@@ -1,11 +1,9 @@
-// sequence.js
-// The setup function will be called automatically when the page loads
 function setupScene() {
 
     dialogFramework
         .setConfig({
-            showControls: false,
-            showDebug: false
+            showControls: true,
+            showDebug: true
         });
 
     dialogFramework
@@ -15,15 +13,6 @@ function setupScene() {
             },
             'Ashley': {
                 color: '#e2829a'
-            },
-            'Alex': {
-                color: '#6386a0'
-            },
-            'Something Terrifying': {
-                color: '#934a4f'
-            },
-            'Something Kind': {
-                color: '#934a4f'
             },
             'Cultist': {
                 color: '#b3ba78'
@@ -76,7 +65,7 @@ function setupScene() {
             imageDelayOut: 0
         })
         .addScene({
-            image: 'summon.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summon.gif',
             speaker: 'Cultists',
             text: "SHOW YOURSELF, DEMON!!",
             censorSpeaker: false,
@@ -94,7 +83,7 @@ function setupScene() {
             shakeDelay: 100
         })
         .addScene({
-            image: 'summon.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summon.gif',
             speaker: 'Cultist',
             text: "This is such fun!!",
             censorSpeaker: false,
@@ -108,7 +97,7 @@ function setupScene() {
             imageDelayOut: 0
         })
         .addScene({
-            image: 'summon.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summon.gif',
             speaker: 'Cultists',
             text: "REVEAL YOURSELF TO US, DEMON!!",
             censorSpeaker: false,
@@ -125,7 +114,7 @@ function setupScene() {
             shakeIntensity: 0.5
         })
         .addScene({
-            image: 'ritual.png',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/ritual.png',
             speaker: 'Ashley',
             text: "Suckers-giving-their-souls-for-free-say-WHAT?!",
             censorSpeaker: false,
@@ -139,7 +128,7 @@ function setupScene() {
             imageDelayOut: 0
         })
         .addScene({
-            image: 'what.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/what.gif',
             speaker: 'Cultists',
             text: "WHAT???",
             censorSpeaker: false,
@@ -156,7 +145,7 @@ function setupScene() {
             shakeIntensity: 0.5
         })
         .addScene({
-            image: 'summoned.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
             speaker: 'Cultists',
             text: "WHO THE HELL ARE YOU??",
             censorSpeaker: false,
@@ -173,7 +162,7 @@ function setupScene() {
             shakeIntensity: 0.5
         })
         .addScene({
-            image: 'summoned.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
             speaker: 'Ashley',
             text: "The new hire",
             censorSpeaker: false,
@@ -185,10 +174,10 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'ashley_talk.png'
+            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/e/e6/S_chat-BUST-.png'
         })
         .addScene({
-            image: 'summoned.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
             speaker: 'Cultists',
             text: "GO AWAY VILE USURPER!!",
             censorSpeaker: false,
@@ -205,7 +194,7 @@ function setupScene() {
             shakeIntensity: 0.5
         })
         .addScene({
-            image: 'summoned.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
             speaker: 'Ashley',
             text: "After you, gentlemen.",
             censorSpeaker: false,
@@ -217,11 +206,11 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'ashley_smug.png',
+            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/8/83/S_mock-BUST-.png',
             bustFade: 0,
         })
         .addScene({
-            image: 'summoned.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
             speaker: 'Ashley',
             text: "PERISH",
             censorSpeaker: false,
@@ -233,14 +222,14 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'ashley_fed_up.png',
+            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/5/51/S_yell-BUST-.png',
             bustFade: 0,
             shake: true,
             shakeDuration: 250,
             shakeIntensity: 0.5
         })
         .addScene({
-            image: 'take_souls.gif',
+            image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/take_souls.gif',
             speaker: '',
             text: "",
             censorSpeaker: false,

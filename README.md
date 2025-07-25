@@ -1,312 +1,323 @@
 # TCOAAL Easy Dialog Creator
 
-A powerful, feature-rich dialog system for creating dialogs in the style of [_The Coffin of Andy and Leyley_](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/) (by *Nemlei*) with advanced visual effects, character management, and smooth transitions. Written in pure JS, requires only a browser to use.
+A powerful, feature-rich dialog system for creating visual novel-style dialogs inspired by [_The Coffin of Andy and Leyley_](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/) (by *Nemlei*). Features an integrated visual editor, advanced effects, and smooth transitions. Written in pure JavaScript.
 
 ## Features
 
+### Integrated Visual Editor
+- **Built-in editor** accessible via the controls menu ('Editor' button)
+- **Visual scene builder** with preview
+- **Save button** positioned at top right for quick updates
+- **Character manager** with color picker
+- **Scene organizer** with drag-and-drop reordering
+- No manual coding required, everything through the UI (but code possible)
+
+### Asset Management
+- **Dual input system**: Upload local files OR use URLs for all assets
+- **Background images** with preview thumbnails
+- **Character busts** (left and right positions)
+- **Sound effects** with inline playback controls
+- **Automatic asset handling** that prioritizes uploaded files over URLs
+
 ### Character System
-- Define characters with custom colors
+- Define unlimited characters with custom colors
 - Automatic CSS generation for character styling
-- Speaker name display with optional glitch censoring
-- Quoted dialog for character speech
+- Speaker names with optional glitch censoring effect
+- Automatic quote marks for character dialog
+- Visual character management in editor
 
-### Image Management
-- Background image transitions with customizable fade times
-- Crossfade effects for smooth image transitions
-- Instant image switching support
-- Automatic image cleanup and memory management
+### Advanced Visual Effects
+- **Glitch text effects** with customizable parameters:
+  - Scrambled/real colors
+  - Change speed and probability
+  - Custom character sets
+- **Screen shake effects** with adjustable:
+  - Intensity levels
+  - Duration
+  - Delay timing
+- **Smooth typing animation** with variable speed
+- (WIP) **Text formatting** support: `<b>bold</b>`, `<i>italic</i>`, `<u>underline</u>`
 
-### Transitions
-- Configurable fade-in/fade-out times for both dialog and images
-- Independent delay controls for precise timing
-- Crossfade support using negative fade times
-- Instant transitions (0ms fade times)
+### Transition System
+- **Independent timing controls** for dialog and images
+- **Fade effects**: In/out with millisecond precision
+- **Delay controls**: Precise timing choreography
+- **Crossfade support**: Smooth image transitions using negative values
+- **Instant transitions**: Zero-delay scene changes
+- **Bust transitions**: Character sprites with fade effects
 
-### Audio
-- Sound effects with volume control
-- Delayed sound playback
-- HTML5 Audio with local file support
-- Automatic audio loading and caching
+### Audio System
+- HTML5 Audio with automatic loading/caching
+- Volume control (0-1 scale)
+- Delayed playback timing
+- Support for local files and URLs
+- Preview sounds directly in editor
 
-### Visual Effects
-- Glitch text effects for speakers and dialog
-- Configurable glitch parameters (speed, colors, characters)
-- Smooth typing animation with adjustable speed
-- Text wrapping and multi-line support
-
-### Controls
-- Keyboard controls (Spacebar for next/skip)
-- Mouse click support
-- Skip typing animation
-- Scene navigation and jumping
-- Reset functionality
-
-### Developer Tools
-- Debug information display
-- Scene counter
-- Control panel (can be hidden)
+### Navigation & Controls
+- **Keyboard and mouse controls**
+- **Control buttons** (with tooltips):
+  - ⬅ Previous: previous scene
+  - ➡ Next: next scene
+  - ⟲ Restart: restart the sequence
+  - Editor: open the visual editor
+- **Scene jumping**: Navigate to any scene directly (code only)
+- **Debug info**: Current scene counter
 
 ## Quick Start
 
-To create custom dialogs, you just need to edit [`js/sequence.js`](./js/sequence.js). It contains an example.
+### Method 1: Visual Editor (Recommended)
 
-### 1. Basic Setup
+1. Open `index.html` in your browser
+2. Click the **Editor** button in the controls
+3. Add characters with the color picker
+4. Build scenes using the visual interface
+5. Click **✔ Save** to apply changes
+6. Use **Download sequence.js** to export your work (advanced users)
+
+### Method 2: Code Editor
+
+Edit [`js/sequence.js`](./js/sequence.js) directly:
 
 ```javascript
 function setupScene() {
-    // Configure the framework
-    dialogFramework.setConfig({
-        showControls: false,  // Hide control buttons
-        showDebug: false  // Hide debug info
-    });
-
-    // Start the sequence automatically (otherwise you need to click/press space)
-    dialogFramework.start();
+    dialogFramework
+        .setConfig({
+            showControls: false,
+            showDebug: false
+        })
+        .setCharacters({
+            'Ashley': { color: '#e2829a' },
+            'Andrew': { color: '#a6de7f' }
+        })
+        .addScene({
+            image: 'intro.png',
+            speaker: 'Ashley',
+            text: 'Welcome to the story!'
+        })
+        .start();
 }
 ```
 
-### 2. Character Configuration
+## Visual Editor Guide
 
-```javascript
-dialogFramework.setCharacters({
-    'Alice': {
-        color: '#ff6b6b'  // Red text for Alice
-    },
-    'Bob': {
-        color: '#4ecdc4'  // Teal text for Bob
-    }
-});
-```
+### Character Management
+1. Enter character name and pick a color
+2. Click **Add Character** 
+3. Edit colors anytime with the color picker
+4. Delete characters with the **Delete** button
 
-### 3. Glitch Effect Configuration
+### Scene Creation
+1. Click **Add New Scene**
+2. Configure:
+   - **Speaker**: Select from character list
+   - **Text**: Enter dialog (supports formatting)
+   - **Assets**: Upload files or enter URLs
+   - **Timing**: Fine-tune all transitions
+   - **Effects**: Add shake or glitch effects
 
-```javascript
-dialogFramework.setGlitchConfig({
-    scrambledColor: '#000000',  // Color for scrambled characters
-    realColor: '#ffffff',  // Color for real characters
-    changeSpeed: 50,  // How fast characters change (ms)
-    realProbability: 5,  // % chance to show real character
-    autoStart: true,  // Start glitch automatically
-    charsAllowed: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%'
-});
-```
+### Asset Input Options
+Each asset field (images/sounds) offers two input methods:
+- **File Upload**: Click to browse local files
+- **URL Input**: Enter direct URLs (http:// or https://)
 
-## Scene Creation
+Priority: Uploaded file > URL > null
 
-### Basic Scene
+### Scene Controls
+- **↑/↓**: Reorder scenes
+- **Duplicate**: Copy scene with all settings
+- **Delete**: Remove scene
+- **Expand/Collapse**: Toggle scene details
 
-```javascript
-dialogFramework.addScene({
-    image: 'background1.png',  // Background image (in img/ folder)
-    speaker: 'Alice',  // Character name
-    text: 'Hello! How are you today?'
-});
-```
+## Scene Configuration
 
-### Advanced Scene with Timing
+### Complete Scene Options
 
 ```javascript
 dialogFramework.addScene({
-    image: 'forest.png',  // Background image, can be animated
-    speaker: 'Bob',
-    text: 'The forest looks mysterious tonight...',
-    
-    // Busts
-    bustLeft: 'andrew_happy.png',  // Image displayed as left speaker bust
-    bustRight: 'ashley_laugh.png',  // Image displayed as right speaker bust
-    bustFade: 0,  // Fade in and fade out time used for busts
+    // Visual Assets
+    image: 'background.png',        // Background image (img/ folder or URL)
+    bustLeft: 'character1.png',     // Left character sprite
+    bustRight: 'character2.png',    // Right character sprite
+    bustFade: 200,                  // Bust fade duration (ms)
 
-    // Dialog timing
-    dialogFadeInTime: 500,  // Fade in dialog over 500ms
-    dialogFadeOutTime: 300,  // Fade out dialog over 300ms
-    dialogDelayIn: 1000,  // Wait 1s before showing dialog
-    dialogDelayOut: 0,  // No delay before fadeOut dialog
+    // Dialog
+    speaker: 'Ashley',              // Character name
+    text: 'Dialog text here',       // Supports <b>, <i>, <u> tags
+    censorSpeaker: true,           // Apply glitch to speaker name
 
-    // Image timing
-    imageFadeInTime: 800,  // Fade in image over 800ms
-    imageFadeOutTime: 400,  // Fade out image over 400ms
-    imageDelayIn: 0,  // Show image immediately
-    imageDelayOut: 200,  // Wait 200ms before fadeOut image
+    // Timing - Dialog
+    dialogFadeInTime: 200,         // Dialog fade in (ms)
+    dialogFadeOutTime: 200,        // Dialog fade out (ms)
+    dialogDelayIn: 500,            // Delay before fade in
+    dialogDelayOut: 0,             // Delay before fade out
+
+    // Timing - Images
+    imageFadeInTime: 200,          // Image fade in (ms)
+    imageFadeOutTime: 200,         // Image fade out (ms)
+    imageDelayIn: 0,               // Delay before fade in
+    imageDelayOut: 0,              // Delay before fade out
 
     // Audio
-    sound: 'forest_ambience.mp3',  // Sound file (in sounds/ folder)
-    soundVolume: 0.7,  // 70% volume
-    soundDelay: 500,  // Wait 500ms before playing
+    sound: 'effect.mp3',           // Sound file (sounds/ folder or URL)
+    soundVolume: 1.0,              // Volume (0-1)
+    soundDelay: 0,                 // Delay before playing (ms)
 
-    // Speaker effects
-    censorSpeaker: true,  // Apply glitch effect to speaker name
-    
-    // Shake effect
-    shake: false,  // Apply shake or not at beginning of scene
-    shakeDelay: 0,  // Delay after beginning of scene to shake
-    shakeIntensity: 1,  // Intensity of the shake, 1 is default, 0.5 is half as strong...
-    shakeDuration: 500  // Duration of the shake
+    // Effects
+    shake: false,                  // Enable shake effect
+    shakeDelay: 0,                 // Delay before shake (ms)
+    shakeIntensity: 1,             // Shake strength multiplier
+    shakeDuration: 500             // Shake duration (ms)
 });
 ```
 
-### Crossfade Effects
+### Special Effects
 
-Use negative fade times to create smooth crossfades between images. Here, the fade out of the image of scene 1 will overlap with the fade in of the image of scene 2, creating a smooth transition over 1 second.
-
+#### Crossfade Between Images
 ```javascript
-// Scene 1
-dialogFramework.addScene({
+// Scene 1 - Prepare for crossfade
+.addScene({
     image: 'day.png',
-    speaker: 'Alice',
-    text: 'As the day begins...',
-    imageFadeOutTime: -1000  // Negative = prepare for crossfade
-});
-
-// Scene 2
-dialogFramework.addScene({
+    imageFadeOutTime: -1000  // Negative value signals crossfade
+})
+// Scene 2 - Execute crossfade
+.addScene({
     image: 'night.png',
-    speaker: 'Alice', 
-    text: 'Night falls quickly.',
-    imageFadeInTime: -1000  // Negative = crossfade from previous
-});
+    imageFadeInTime: -1000   // Matches previous scene's value
+})
 ```
 
-### Scene Without Image
-
+#### Dramatic Shake Effect
 ```javascript
-dialogFramework.addScene({
-    image: null,  // No background image
-    speaker: '',  // No speaker (narrator text)
-    text: 'The screen fades to black...'
-});
+.addScene({
+    text: 'EARTHQUAKE!',
+    shake: true,
+    shakeIntensity: 2.5,     // 2.5x normal intensity
+    shakeDuration: 1000      // 1 second shake
+})
 ```
 
-## Chaining Scenes
-
-Scenes can be chained together for fluent syntax:
-
+#### Glitched Introduction
 ```javascript
-dialogFramework
-    .addScene({
-        image: 'intro.png',
-        speaker: 'Alice',
-        text: 'Welcome to our story!'
-    })
-    .addScene({
-        image: 'chapter1.png', 
-        speaker: 'Bob',
-        text: 'Let me show you around.'
-    })
-    .addScene({
-        speaker: 'Alice',
-        text: 'This is going to be exciting!'
-    });
+.addScene({
+    speaker: 'Lord Unknown',
+    text: 'TaR SouL?',
+    censorSpeaker: true,     // Glitch the speaker name
+    dialogFadeInTime: 2000   // Slow, creepy fade
+})
 ```
 
-## Control Methods
-
-### Playback Control
+### Text Formatting (WIP)
 
 ```javascript
-dialogFramework.start();  // Start from beginning
-dialogFramework.next();  // Advance to next scene
-dialogFramework.reset();  // Reset to beginning
-dialogFramework.skipText();  // Skip current typing animation
+.addScene({
+    text: 'This is <b>bold</b>, <i>italic</i>, and <u>underlined</u> text.'
+})
 ```
 
-### Scene Navigation
+### Null Values
+Use `null` to explicitly disable features:
 
 ```javascript
-dialogFramework.jumpToScene(5);  // Jump to scene 5
-let current = dialogFramework.getCurrentScene();  // Get current scene index
-```
-
-### Configuration
-
-```javascript
-dialogFramework.setTypeSpeed(30);  // Set typing speed (ms per character)
+.addScene({
+    image: null,      // No background change
+    speaker: '',      // No speaker (narrator mode)
+    sound: null,      // No sound
+    bustLeft: null,   // Remove left bust
+    bustRight: null   // Remove right bust
+})
 ```
 
 ## File Structure
 
 ```
 project/
-├── tcoaal.html  # Main HTML file
-├── style.css  # Styling
+├── index.html           # Main application
+├── viewer.css          # Game viewer styles
+├── editor.css          # Editor interface styles
 ├── js/
-│   ├── dialog.js  # Core framework
-│   └── sequence.js  # Your scene definitions
-├── img/  # Background images
-│   ├── background1.png
-│   └── forest.png
-├── sounds/  # Audio files
-│   ├── forest_ambience.mp3
-│   └── button_click.wav
-└── fonts/
-    └── Faustina-Regular.ttf  # Custom font
+│   ├── dialog.js       # Core framework
+│   ├── editor.js       # Visual editor logic
+│   ├── interface.js    # UI management
+│   └── sequence.js     # Your scene definitions
+├── img/                # Image assets
+├── sounds/             # Audio files
+└── fonts/      # Fonts assets
 ```
 
-## Keyboard Controls
+## Keyboard Shortcuts
 
-- **Spacebar**: Advance to next scene or skip typing
-- **Click**: Same as spacebar (click outside controls)
+| Key | Action |
+|-----|--------|
+| Click | Next scene / Skip typing |
+| `Space` | Next scene / Skip typing |
+| `RightArrow` | Next scene / Skip typing |
+| `LeftArrow` | Previous scene |
+| `Tab` | Show/Hide controls |
 
-## Scene Timing Examples
+## Advanced Features
 
-### Instant Transitions
+### Glitch Configuration
+
 ```javascript
-.addScene({
-    image: 'fast.png',
-    text: 'This appears instantly!',
-    dialogFadeInTime: 0,
-    imageFadeInTime: 0
-})
+dialogFramework.setGlitchConfig({
+    scrambledColor: '#ff0000',     // Red for scrambled text
+    realColor: '#00ff00',          // Green for real text
+    changeSpeed: 30,               // Faster changes
+    realProbability: 10,           // 10% chance of real char
+    autoStart: true,
+    charsAllowed: '01'             // Binary-style glitch
+});
 ```
 
-### Slow, Dramatic Entrance
+### Scene Navigation
+
 ```javascript
-.addScene({
-    image: 'dramatic.png',
-    speaker: 'Villain',
-    text: 'At last... we meet again.',
-    dialogFadeInTime: 2000,  // 2 second fade
-    imageFadeInTime: 3000,  // 3 second fade
-    dialogDelayIn: 1000,  // Wait 1 second
-    censorSpeaker: true  // Glitchy speaker name
-})
+// Jump to specific scene
+dialogFramework.jumpToScene(5);
+
+// Get current position
+let currentScene = dialogFramework.getCurrentScene();
+
+// Programmatic control
+dialogFramework.previous();  // Go back one scene
 ```
 
-### Complex Sequence with Audio
+### Dynamic Scene Building
+
 ```javascript
-.addScene({
-    image: 'explosion.png',
-    speaker: '',
-    text: 'BOOM!',
-    sound: 'explosion.mp3',
-    soundVolume: 1.0,
-    soundDelay: 0,
-    imageFadeInTime: 100,  // Quick flash
-    dialogFadeInTime: 50,
-    dialogFadeOutTime: 200,
-    imageFadeOutTime: 500
-})
+// Build scenes from data
+const storyData = [
+    { speaker: 'Ashley', text: 'Hello!' },
+    { speaker: 'Andrew', text: 'Hi there!' }
+];
+
+storyData.forEach(scene => dialogFramework.addScene(scene));
 ```
 
-## Browser Compatibility
+## Tips & Best Practices
 
-- Modern browsers support
-- HTML5 Audio support for sound effects
-- CSS3 transitions for animations
-- Local file access for development
+1. **Performance**: Use reasonable fade times (100-2000ms)
+2. **Accessibility**: Keep text on screen long enough to read
+3. **Audio**: Keep volumes balanced (0.7-0.8 for background)
+4. **Images**: Optimize file sizes for web delivery
+5. **Testing**: Use debug mode during development
+6. **Saving**: Use the Download button to backup your work
+7. **Dialog box**: You can edit `viewer.css` and change `.dialog-container { background-image: url('') }` to change the dialog box background png
 
-## Getting Started
+## Browser Requirements
 
-1. Copy all files to your project directory
-2. Edit `js/sequence.js` to create your scenes (already contains an example)
-3. Add your images to the `img/` folder
-4. Add your sounds to the `sounds/` folder
-5. Open `tcoaal.html` in your browser
+- Modern browser with ES6 support
+- HTML5 Audio capability
+- CSS3 transitions
+- Local file access (for editor uploads)
 
-## Tips
+## Troubleshooting
 
-- Use negative fade times for smooth crossfades
-- Set `censorSpeaker: false` for clear speaker names
-- Combine delays and fade times for complex timing
-- Use empty speaker `''` for narrator text
-- Set `image: null` for dialog-only scenes
-- Chain multiple `addScene()` calls for cleaner code
+**Can't see controls**: Press `Tab` to toggle visibility
+**Audio not playing**: Check browser autoplay policies
+**Glitch not working**: Verify glitch config and `censorSpeaker: true`
+
+## Credits
+
+Dialog system inspired by _The Coffin of Andy and Leyley_ by Nemlei.
+Created by Kidev as a fan tool for the community.
