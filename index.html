@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCOAAL Dialog Creator</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+    <div class="editor-container">
+        <h1>TCOAAL Dialog Creator</h1>
+
+        <!-- Configuration Section -->
+        <div class="section">
+            <button class="section-header collapsible active" onclick="toggleSection(this)">
+                Configuration & Glitch Settings
+            </button>
+            <div class="section-content" style="display: none;">
+                <div class="subsection">
+                    <h3>General Configuration</h3>
+                    <div class="form-group">
+                        <label>Show Controls:</label>
+                        <input type="checkbox" id="configShowControls" checked>
+                    </div>
+                    <div class="form-group">
+                        <label>Show Debug:</label>
+                        <input type="checkbox" id="configShowDebug" checked>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Glitch Effect</h3>
+                    <div class="form-group">
+                        <label>Scrambled Color:</label>
+                        <input type="color" id="glitchScrambledColor" value="#000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Real Color:</label>
+                        <input type="color" id="glitchRealColor" value="#ffffff">
+                    </div>
+                    <div class="form-group">
+                        <label>Change Speed:</label>
+                        <input type="number" id="glitchChangeSpeed" value="50" min="10" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label>Real Probability:</label>
+                        <input type="number" id="glitchRealProbability" value="5" min="0" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Auto Start:</label>
+                        <input type="checkbox" id="glitchAutoStart" checked>
+                    </div>
+                    <div class="form-group">
+                        <label>Allowed Characters:</label>
+                        <input type="text" id="glitchCharsAllowed" value="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Characters Section -->
+        <div class="section">
+            <h2 class="section-title">Characters</h2>
+            <div id="charactersList"></div>
+            <div class="form-group add-character">
+                <input type="text" id="newCharacterName" placeholder="Character name">
+                <input type="color" id="newCharacterColor" value="#ffffff">
+                <button onclick="addCharacter()">Add Character</button>
+            </div>
+        </div>
+
+        <!-- Scenes Section -->
+        <div class="section">
+            <h2 class="section-title">Scenes</h2>
+            <div id="scenesList"></div>
+            <button onclick="addScene()" class="success">Add New Scene</button>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-buttons">
+            <button onclick="runInNewTab()">Run in New Tab</button>
+            <button onclick="saveToFile()">Save Project</button>
+            <button onclick="loadFromFile()">Load Project</button>
+        </div>
+
+        <!-- Output Section -->
+        <br/>
+        <div class="section">
+            <button class="section-header collapsible" onclick="toggleSection(this)">
+                Generated sequence.js (for advanced users)
+            </button>
+            <div class="section-content" style="display: none;">
+                <textarea id="outputCode" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" style="display: none;" accept=".json">
+
+    <script src="js/editor.js"></script>
+</body>
+</html>

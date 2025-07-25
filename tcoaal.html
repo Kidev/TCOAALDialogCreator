@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCOAAL Dialog Viewer</title>
+    <link href="fonts/Faustina-Regular.ttf" rel="stylesheet">
+    <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+    <div class="game-container">
+
+        <div class="dialog-container" id="dialogContainer">
+            <div class="dialog-content">
+                <div class="dialog-line speaker-line" id="speakerLine"></div>
+                <div class="dialog-line text-line" id="textLine1"></div>
+                <div class="dialog-line text-line" id="textLine2"></div>
+            </div>
+        </div>
+
+        <div class="controls" id='controlsContainer'>
+            <button onclick="dialogFramework.start()">Start</button>
+            <button onclick="dialogFramework.next()">Next</button>
+            <button onclick="dialogFramework.reset()">Reset</button>
+            <button onclick="dialogFramework.skipText()">Skip Text</button>
+        </div>
+
+        <div class="debug-info" id="debugInfo">
+            Scene: 0 / 0
+        </div>
+    </div>
+
+    <script src="js/dialog.js"></script>
+    <script src="js/sequence.js"></script>
+
+    <script>
+        const dialogFramework = new DialogFramework();
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof setupScene === 'function') {
+                setupScene();
+            } else if (typeof setupScenes === 'function') {
+                setupScenes();
+            } else {
+                console.warn('No setup function found in sequence.js. Please define setupScene() or setupScenes()');
+            }
+        });
+    </script>
+</body>
+</html>
