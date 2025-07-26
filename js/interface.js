@@ -42,7 +42,7 @@ function closeEditor() {
     }
 }
 
-function runSequence() {
+async function runSequence() {
     window.lastProjectData = JSON.parse(JSON.stringify(projectData));
 
     dialogFramework.reset();
@@ -55,6 +55,11 @@ function runSequence() {
     projectData.scenes.forEach(scene => {
         dialogFramework.addScene(scene);
     });
+
+    showLoadingIndicator('Preloading assets...');
+    console.log('Preloading assets for smooth playback...');
+    await dialogFramework.preloadAssets();
+    hideLoadingIndicator();
 
     closeEditor();
     dialogFramework.start();
@@ -75,12 +80,61 @@ function downloadSequence() {
     URL.revokeObjectURL(url);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    createLoadingIndicator();
+
     if (typeof setupScene === 'function') {
         setupScene();
+
+        showLoadingIndicator('Initializing assets...');
+        console.log('Initializing and preloading assets...');
+        await dialogFramework.preloadAssets();
+        hideLoadingIndicator();
+        console.log('Ready to play!');
+
+        dialogFramework.updateDebugInfo();
     } else if (typeof setupScenes === 'function') {
         setupScenes();
+
+        showLoadingIndicator('Initializing assets...');
+        console.log('Initializing and preloading assets...');
+        await dialogFramework.preloadAssets();
+        hideLoadingIndicator();
+        console.log('Ready to play!');
+
+        dialogFramework.updateDebugInfo();
     } else {
         console.warn('No setup function found in sequence.js. Please define setupScene()');
+
+        dialogFramework.updateDebugInfo();
     }
 });
+
+function createLoadingIndicator() {
+    if (!document.getElementById('loadingIndicator')) {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loadingIndicator';
+        loadingDiv.className = 'loading-indicator';
+        loadingDiv.innerHTML = `
+        <div class="loading-spinner"></div>
+        <span id="loadingText">Loading...</span>
+        `;
+        document.body.appendChild(loadingDiv);
+    }
+}
+
+function showLoadingIndicator(text = 'Loading...') {
+    const indicator = document.getElementById('loadingIndicator');
+    const textElement = document.getElementById('loadingText');
+    if (indicator && textElement) {
+        textElement.textContent = text;
+        indicator.classList.add('active');
+    }
+}
+
+function hideLoadingIndicator() {
+    const indicator = document.getElementById('loadingIndicator');
+    if (indicator) {
+        indicator.classList.remove('active');
+    }
+}

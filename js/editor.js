@@ -1,7 +1,7 @@
 let projectData = {
     config: {
-        showControls: false,
-        showDebug: false
+        showControls: true,
+        showDebug: true
     },
     characters: {},
     glitchConfig: {
@@ -20,7 +20,6 @@ let soundMap = new Map();
 let expandedScenes = new Set();
 let currentlyPlayingAudio = null;
 
-// Hidden textarea for code generation (not displayed in SPA mode)
 if (!document.getElementById('outputCode')) {
     const hiddenTextarea = document.createElement('textarea');
     hiddenTextarea.id = 'outputCode';
@@ -121,7 +120,7 @@ function addScene() {
         sound: null,
         soundVolume: 1.0,
         soundDelay: 0,
-        censorSpeaker: true,
+        censorSpeaker: false,
         bustLeft: null,
         bustRight: null,
         bustFade: 0,
@@ -646,33 +645,79 @@ function updateGlitchConfig() {
     };
 }
 
+function eraseAll() {
+    const confirmMessage = "This will delete ALL characters and scenes!\n\nAre you sure you want to continue?";
+
+    if (confirm(confirmMessage)) {
+        if (currentlyPlayingAudio) {
+            currentlyPlayingAudio.pause();
+            currentlyPlayingAudio = null;
+        }
+
+        projectData = {
+            config: {
+                showControls: false,
+                showDebug: false
+            },
+            characters: {},
+            glitchConfig: {
+                scrambledColor: '#000000',
+                realColor: '#ffffff',
+                changeSpeed: 50,
+                realProbability: 5,
+                autoStart: true,
+                charsAllowed: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+            },
+            scenes: []
+        };
+
+        imageMap.clear();
+        soundMap.clear();
+        expandedScenes.clear();
+
+        document.getElementById('configShowControls').checked = true;
+        document.getElementById('configShowDebug').checked = true;
+
+        document.getElementById('glitchScrambledColor').value = '#000000';
+        document.getElementById('glitchRealColor').value = '#ffffff';
+        document.getElementById('glitchChangeSpeed').value = 50;
+        document.getElementById('glitchRealProbability').value = 5;
+        document.getElementById('glitchAutoStart').checked = true;
+        document.getElementById('glitchCharsAllowed').value = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        document.getElementById('newCharacterName').value = '';
+        document.getElementById('newCharacterColor').value = '#ffffff';
+
+        updateCharactersList();
+        updateScenesList();
+
+        console.log('All data has been erased and reset to defaults');
+    }
+}
+
 function generateCode() {
     updateConfig();
     updateGlitchConfig();
 
-    let code = `
-function setupScene() {
-
-    dialogFramework
-    .setConfig({
+    let code = `function setupScene() {
+    dialogFramework.setConfig({
         showControls: ${projectData.config.showControls},
         showDebug: ${projectData.config.showDebug}
     });
 
-    dialogFramework
-    .setCharacters({
-        `;
+    dialogFramework.setCharacters({`;
 
             Object.entries(projectData.characters).forEach(([name, data], index, array) => {
-                code += `            '${name}': {
-                    color: '${data.color}'
-                }${index < array.length - 1 ? ',' : ''}\n`;
+                code += `
+            '${name}': {
+                color: '${data.color}'
+            }${index < array.length - 1 ? ',' : ''}`;
             });
 
-            code += `        });
+            code += `
+    });
 
-    dialogFramework
-    .setGlitchConfig({
+    dialogFramework.setGlitchConfig({
         scrambledColor: '${projectData.glitchConfig.scrambledColor}',
         realColor: '${projectData.glitchConfig.realColor}',
         changeSpeed: ${projectData.glitchConfig.changeSpeed},
@@ -681,60 +726,60 @@ function setupScene() {
         charsAllowed: '${projectData.glitchConfig.charsAllowed}'
     });
 
-        dialogFramework`;
+    dialogFramework`;
 
         projectData.scenes.forEach((scene, index) => {
             code += `
-            .addScene({
-                image: ${scene.image === null ? 'null' : `'${scene.image}'`},
-                speaker: '${scene.speaker}',
-                text: ${scene.text === null ? 'null' : `"${scene.text.replace(/"/g, '\\"')}"`},
-                      censorSpeaker: ${scene.censorSpeaker},
-                      dialogFadeInTime: ${scene.dialogFadeInTime},
-                      dialogFadeOutTime: ${scene.dialogFadeOutTime},
-                      imageFadeInTime: ${scene.imageFadeInTime},
-                      imageFadeOutTime: ${scene.imageFadeOutTime},
-                      dialogDelayIn: ${scene.dialogDelayIn},
-                      dialogDelayOut: ${scene.dialogDelayOut},
-                      imageDelayIn: ${scene.imageDelayIn},
-                      imageDelayOut: ${scene.imageDelayOut}`;
+        .addScene({
+            image: ${scene.image === null ? 'null' : `'${scene.image}'`},
+            speaker: '${scene.speaker}',
+            text: ${scene.text === null ? 'null' : `"${scene.text.replace(/"/g, '\\"')}"`},
+            censorSpeaker: ${scene.censorSpeaker},
+            dialogFadeInTime: ${scene.dialogFadeInTime},
+            dialogFadeOutTime: ${scene.dialogFadeOutTime},
+            imageFadeInTime: ${scene.imageFadeInTime},
+            imageFadeOutTime: ${scene.imageFadeOutTime},
+            dialogDelayIn: ${scene.dialogDelayIn},
+            dialogDelayOut: ${scene.dialogDelayOut},
+            imageDelayIn: ${scene.imageDelayIn},
+            imageDelayOut: ${scene.imageDelayOut}`;
 
                       if (scene.sound !== null) {
                           code += `,
-                          sound: '${scene.sound}',
-                          soundVolume: ${scene.soundVolume},
-                          soundDelay: ${scene.soundDelay}`;
+            sound: '${scene.sound}',
+            soundVolume: ${scene.soundVolume},
+            soundDelay: ${scene.soundDelay}`;
                       }
 
                       if (scene.bustLeft !== null) {
                           code += `,
-                          bustLeft: '${scene.bustLeft}'`;
+            bustLeft: '${scene.bustLeft}'`;
                       }
 
                       if (scene.bustRight !== null) {
                           code += `,
-                          bustRight: '${scene.bustRight}'`;
+            bustRight: '${scene.bustRight}'`;
                       }
 
                       if (scene.bustLeft !== null || scene.bustRight !== null) {
                           code += `,
-                          bustFade: ${scene.bustFade}`;
+            bustFade: ${scene.bustFade}`;
                       }
 
                       if (scene.shake) {
                           code += `,
-                          shake: true,
-                          shakeDelay: ${scene.shakeDelay},
-                          shakeIntensity: ${scene.shakeIntensity},
-                          shakeDuration: ${scene.shakeDuration}`;
+            shake: true,
+            shakeDelay: ${scene.shakeDelay},
+            shakeIntensity: ${scene.shakeIntensity},
+            shakeDuration: ${scene.shakeDuration}`;
                       }
 
                       code += `
-            })`;
+        })`;
         });
 
         code += `;
-    }`;
+}`;
 
     document.getElementById('outputCode').value = code;
 }

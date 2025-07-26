@@ -165,13 +165,13 @@ class DialogFramework {
         this.characters = {};
         this.glitchConfig = {};
         this.config = {};
+        this.clickToStartShown = false;
 
         this.initializeEventListeners();
         this.initializeAudio();
         this.updateDebugInfo();
     }
 
-    // Initialize audio system using HTML5 Audio (works with local files)
     async initializeAudio() {
         try {
             const testAudio = new Audio();
@@ -180,14 +180,132 @@ class DialogFramework {
         }
     }
 
-    // Load and cache audio file using HTML5 Audio
+    async preloadAssets() {
+        const startTime = performance.now();
+        console.log('Starting asset preloading...');
+        const preloadPromises = [];
+        const preloadedImages = new Set();
+        const preloadedSounds = new Set();
+
+        this.scenes.forEach((scene, index) => {
+            if (scene.image && this.isRemoteUrl(scene.image) && !preloadedImages.has(scene.image)) {
+                preloadedImages.add(scene.image);
+                preloadPromises.push(this.preloadImage(scene.image, `Scene ${index + 1} background`));
+            }
+
+            if (scene.bustLeft && this.isRemoteUrl(scene.bustLeft) && !preloadedImages.has(scene.bustLeft)) {
+                preloadedImages.add(scene.bustLeft);
+                preloadPromises.push(this.preloadImage(scene.bustLeft, `Scene ${index + 1} bust left`));
+            }
+
+            if (scene.bustRight && this.isRemoteUrl(scene.bustRight) && !preloadedImages.has(scene.bustRight)) {
+                preloadedImages.add(scene.bustRight);
+                preloadPromises.push(this.preloadImage(scene.bustRight, `Scene ${index + 1} bust right`));
+            }
+
+            if (scene.sound && this.isRemoteUrl(scene.sound) && !preloadedSounds.has(scene.sound)) {
+                preloadedSounds.add(scene.sound);
+                preloadPromises.push(this.preloadSound(scene.sound, `Scene ${index + 1} sound`));
+            }
+        });
+
+        if (preloadPromises.length > 0) {
+            console.log(`Preloading ${preloadPromises.length} remote assets...`);
+            try {
+                await Promise.allSettled(preloadPromises);
+                const endTime = performance.now();
+                const duration = ((endTime - startTime) / 1000).toFixed(2);
+                console.log(`Assets preloaded in ${duration} seconds`);
+            } catch (error) {
+                console.warn('Some assets failed to preload:', error);
+            }
+        } else {
+            const endTime = performance.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(2);
+            console.log(`No remote assets to preload (completed in ${duration} seconds)`);
+        }
+    }
+
+    isRemoteUrl(url) {
+        return url && (url.startsWith('http://') || url.startsWith('https://'));
+    }
+
+    async preloadImage(url, description = '') {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+
+            const onLoad = () => {
+                console.log(`✓ Preloaded image: ${description || url}`);
+                img.removeEventListener('load', onLoad);
+                img.removeEventListener('error', onError);
+                resolve(img);
+            };
+
+            const onError = (error) => {
+                console.warn(`✗ Failed to preload image: ${description || url}`, error);
+                img.removeEventListener('load', onLoad);
+                img.removeEventListener('error', onError);
+                resolve(null);
+            };
+
+            img.addEventListener('load', onLoad);
+            img.addEventListener('error', onError);
+
+            setTimeout(() => {
+                if (!img.complete) {
+                    console.warn(`⚠ Timeout preloading image: ${description || url}`);
+                    img.removeEventListener('load', onLoad);
+                    img.removeEventListener('error', onError);
+                    resolve(null);
+                }
+            }, 10000);
+
+            img.src = url;
+        });
+    }
+
+    async preloadSound(url, description = '') {
+        return new Promise((resolve, reject) => {
+            const audio = new Audio();
+
+            const onCanPlay = () => {
+                console.log(`✓ Preloaded sound: ${description || url}`);
+                audio.removeEventListener('canplaythrough', onCanPlay);
+                audio.removeEventListener('error', onError);
+                this.loadedSounds.set(url, audio);
+                resolve(audio);
+            };
+
+            const onError = (error) => {
+                console.warn(`✗ Failed to preload sound: ${description || url}`, error);
+                audio.removeEventListener('canplaythrough', onCanPlay);
+                audio.removeEventListener('error', onError);
+                resolve(null);
+            };
+
+            audio.addEventListener('canplaythrough', onCanPlay);
+            audio.addEventListener('error', onError);
+
+            setTimeout(() => {
+                if (audio.readyState < 4) { // HAVE_ENOUGH_DATA
+                    console.warn(`⚠ Timeout preloading sound: ${description || url}`);
+                    audio.removeEventListener('canplaythrough', onCanPlay);
+                    audio.removeEventListener('error', onError);
+                    resolve(null);
+                }
+            }, 10000);
+
+            audio.src = url;
+            audio.load();
+        });
+    }
+
     async loadSound(soundPath) {
         if (this.loadedSounds.has(soundPath)) {
             return this.loadedSounds.get(soundPath);
         }
 
         try {
-            // Check if it's a URL or local file
             const audioSrc = soundPath.startsWith('http://') || soundPath.startsWith('https://')
             ? soundPath
             : 'sounds/' + soundPath;
@@ -299,10 +417,12 @@ class DialogFramework {
 
     updateConfig() {
         const controls = document.getElementById('controlsContainer');
-        const debug = document.getElementById('debugInfo');
+        const debugArea = document.getElementById('debugArea');
 
         controls.classList.toggle('hidden', !this.config.showControls);
-        debug.style.opacity = this.config.showDebug ? '1' : '0';
+        debugArea.classList.toggle('hidden', !this.config.showDebug);
+        //debugArea.style.opacity = this.config.showDebug ? '1' : '0';
+        debugArea.style.pointerEvents = this.config.showDebug ? 'auto' : 'none';
     }
 
     addScene(options) {
@@ -324,7 +444,7 @@ class DialogFramework {
             sound: options.sound || null,
             soundVolume: options.soundVolume || 1.0,
             soundDelay: options.soundDelay || 0,
-            censorSpeaker: options.censorSpeaker !== undefined ? options.censorSpeaker : true,
+            censorSpeaker: options.censorSpeaker !== undefined ? options.censorSpeaker : false,
 
             bustLeft: options.bustLeft !== undefined ? options.bustLeft : null,
             bustRight: options.bustRight !== undefined ? options.bustRight : null,
@@ -361,6 +481,7 @@ class DialogFramework {
             } else if (e.code === 'Tab') {
                 e.preventDefault();
                 this.toggleControls();
+                this.toggleDebugInfo();
             }
         });
 
@@ -384,9 +505,56 @@ class DialogFramework {
         controls.classList.toggle('hidden');
     }
 
+    toggleDebugInfo() {
+        const debugArea = document.getElementById('debugArea');
+        debugArea.classList.toggle('hidden');
+    }
+
+    updateButtonStates() {
+        const prevButton = document.querySelector('button[onclick="dialogFramework.previous()"]');
+        const nextButton = document.querySelector('button[onclick="dialogFramework.next()"]');
+        const resetButton = document.querySelector('button[onclick="dialogFramework.reset()"]');
+
+        if (!prevButton || !nextButton || !resetButton) return;
+
+        prevButton.disabled = false;
+        nextButton.disabled = false;
+        resetButton.disabled = false;
+
+        if (this.currentScene < 0) {
+            prevButton.disabled = true;
+            resetButton.disabled = true;
+        } else if (this.currentScene === 0) {
+            prevButton.disabled = true;
+        }
+
+        if (this.currentScene >= this.scenes.length) {
+            nextButton.disabled = true;
+        }
+    }
+
+    updateStartMessage() {
+        let startMessage = document.getElementById('startMessage');
+
+        if (!startMessage) {
+            startMessage = document.createElement('div');
+            startMessage.id = 'startMessage';
+            startMessage.className = 'start-message';
+            startMessage.textContent = 'Click to start the animation';
+            document.body.appendChild(startMessage);
+        }
+
+        if (this.currentScene === -1 && this.clickToStartShown === false) {
+            startMessage.classList.add('active');
+        } else {
+            startMessage.classList.remove('active');
+        }
+    }
+
     start() {
         this.currentScene = 0;
         this.showScene(0);
+        this.updateDebugInfo();
     }
 
     async showScene(index, force = false) {
@@ -1273,6 +1441,7 @@ class DialogFramework {
         } else {
             this.hideDialog();
         }
+        this.updateDebugInfo();
     }
 
     previous() {
@@ -1287,6 +1456,7 @@ class DialogFramework {
         this.reset();
         this.jumpToScene(currentIndex);
     }
+
 
     hideDialog() {
         const dialogContainer = document.getElementById('dialogContainer');
@@ -1317,7 +1487,14 @@ class DialogFramework {
 
     updateDebugInfo() {
         const debugInfo = document.getElementById('debugInfo');
-        debugInfo.textContent = `Scene: ${this.currentScene + 1} / ${this.scenes.length}`;
+        if (this.currentScene >= this.scenes.length) {
+            debugInfo.textContent = `Endscreen`;
+        } else {
+            debugInfo.textContent = `Scene: ${this.currentScene + 1} / ${this.scenes.length}`;
+        }
+
+        this.updateButtonStates();
+        this.updateStartMessage();
     }
 
     setTypeSpeed(speed) {
@@ -1333,6 +1510,7 @@ class DialogFramework {
         if (index >= 0 && index < this.scenes.length) {
             this.currentScene = index;
             this.showScene(index, true);
+            this.updateDebugInfo();
         }
         return this;
     }

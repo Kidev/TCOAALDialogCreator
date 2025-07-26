@@ -1,13 +1,10 @@
 function setupScene() {
+    dialogFramework.setConfig({
+        showControls: true,
+        showDebug: true
+    });
 
-    dialogFramework
-        .setConfig({
-            showControls: true,
-            showDebug: true
-        });
-
-    dialogFramework
-        .setCharacters({
+    dialogFramework.setCharacters({
             'Andrew': {
                 color: '#a6de7f'
             },
@@ -23,17 +20,16 @@ function setupScene() {
             '???': {
                 color: '#934a4f'
             }
-        });
+    });
 
-    dialogFramework
-        .setGlitchConfig({
-            scrambledColor:  '#000000',
-            realColor: '#ffffff',
-            changeSpeed: 50,
-            realProbability: 5,
-            autoStart: true,
-            charsAllowed : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-        });
+    dialogFramework.setGlitchConfig({
+        scrambledColor: '#000000',
+        realColor: '#ffffff',
+        changeSpeed: 50,
+        realProbability: 5,
+        autoStart: true,
+        charsAllowed: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    });
 
     dialogFramework
         .addScene({
@@ -78,9 +74,9 @@ function setupScene() {
             imageDelayIn: 0,
             imageDelayOut: 0,
             shake: true,
-            shakeDuration: 250,
+            shakeDelay: 100,
             shakeIntensity: 0.5,
-            shakeDelay: 100
+            shakeDuration: 250
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summon.gif',
@@ -110,8 +106,9 @@ function setupScene() {
             imageDelayIn: 0,
             imageDelayOut: 0,
             shake: true,
-            shakeDuration: 250,
-            shakeIntensity: 0.5
+            shakeDelay: 0,
+            shakeIntensity: 0.5,
+            shakeDuration: 250
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/ritual.png',
@@ -141,8 +138,9 @@ function setupScene() {
             imageDelayIn: 0,
             imageDelayOut: 0,
             shake: true,
-            shakeDuration: 500,
-            shakeIntensity: 0.5
+            shakeDelay: 0,
+            shakeIntensity: 0.5,
+            shakeDuration: 500
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
@@ -158,8 +156,9 @@ function setupScene() {
             imageDelayIn: 0,
             imageDelayOut: 0,
             shake: true,
-            shakeDuration: 500,
-            shakeIntensity: 0.5
+            shakeDelay: 0,
+            shakeIntensity: 0.5,
+            shakeDuration: 500
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
@@ -174,7 +173,8 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/e/e6/S_chat-BUST-.png'
+            bustRight: 'https://i.imgur.com/KWOxq1K.png',
+            bustFade: 0
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
@@ -190,8 +190,9 @@ function setupScene() {
             imageDelayIn: 0,
             imageDelayOut: 0,
             shake: true,
-            shakeDuration: 500,
-            shakeIntensity: 0.5
+            shakeDelay: 0,
+            shakeIntensity: 0.5,
+            shakeDuration: 500
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
@@ -206,8 +207,8 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/8/83/S_mock-BUST-.png',
-            bustFade: 0,
+            bustRight: 'https://i.imgur.com/uK551zi.png',
+            bustFade: 0
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/summoned.gif',
@@ -222,11 +223,12 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0,
-            bustRight: 'https://static.wikia.nocookie.net/coffin-of-andy-and-leyley/images/5/51/S_yell-BUST-.png',
+            bustRight: 'https://i.imgur.com/ElOsfC1.png',
             bustFade: 0,
             shake: true,
-            shakeDuration: 250,
-            shakeIntensity: 0.5
+            shakeDelay: 0,
+            shakeIntensity: 0.5,
+            shakeDuration: 250
         })
         .addScene({
             image: 'https://raw.githubusercontent.com/Kidev/TCOAALDialogCreator/refs/heads/main/demo/take_souls.gif',
@@ -255,5 +257,5 @@ function setupScene() {
             dialogDelayOut: 0,
             imageDelayIn: 0,
             imageDelayOut: 0
-        })
+        });
 }

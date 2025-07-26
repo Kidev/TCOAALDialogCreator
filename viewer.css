@@ -122,7 +122,8 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
-    min-width: 280px;
+    min-width: 300px;
+    font-family: 'Faustina', serif;
 }
 
 .controls.hidden {
@@ -158,42 +159,29 @@ body {
 
 .controls-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 12px;
     padding-bottom: 8px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.controls-title {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75em;
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-}
-
-.github-link {
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    transition: all 0.2s ease;
-    padding: 4px;
-    border-radius: 4px;
+.controls-footer {
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 4px;
+    margin-top: 4px;
+    padding-top: 0px;
 }
 
-.github-link:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.05);
-}
-
-.github-icon {
-    width: 16px;
-    height: 16px;
-    fill: currentColor;
+.controls-title {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.7em;
+    font-weight: 300;
+    letter-spacing: 0.3px;
+    text-transform: lowercase;
+    font-family: 'Faustina', serif;
+    opacity: 0.9;
 }
 
 .controls-grid {
@@ -214,19 +202,104 @@ body {
     margin-top: 8px;
 }
 
-.debug-info {
+.debug-area {
     position: fixed;
     top: 20px;
     right: 20px;
+    z-index: 100;
+}
+
+.debug-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-end;
+}
+
+.github-link-debug {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85em;
+    font-family: 'Faustina', serif;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.github-link-debug:hover {
+    color: #fff;
+    background: rgba(74, 144, 226, 0.15);
+    border-color: rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.2);
+}
+
+.github-link-debug .github-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.debug-info {
     background: rgba(0,0,0,0.8);
     color: #fff;
     padding: 12px;
     border-radius: 6px;
     font-size: 0.9em;
-    z-index: 100;
     border: 1px solid #333;
     min-width: 120px;
     text-align: center;
+    font-family: 'Faustina', serif;
+}
+
+.github-link-debug {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.85em;
+    font-family: 'Faustina', serif;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.github-link-debug:hover {
+    color: #fff;
+    background: rgba(74, 144, 226, 0.15);
+    border-color: rgba(74, 144, 226, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.2);
+}
+
+.github-link-debug .github-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+.debug-info {
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    border: 1px solid #333;
+    min-width: 120px;
+    text-align: center;
+    font-family: 'Faustina', serif;
 }
 
 .text-line strong {
@@ -266,4 +339,111 @@ body {
     font-size: inherit;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     font-family: 'Courier New', 'Monaco', monospace;
+}
+
+.loading-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(15, 15, 15, 0.95);
+    color: #4a90e2;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-family: 'Faustina', serif;
+    font-size: 0.9em;
+    z-index: 150;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(74, 144, 226, 0.3);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loading-indicator.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.loading-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(74, 144, 226, 0.3);
+    border-top: 2px solid #4a90e2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.controls button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.5;
+}
+
+.controls button:disabled:hover {
+    background: #666;
+    transform: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.controls.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+}
+
+.debug-area {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.debug-area.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+}
+
+.start-message {
+    position: fixed;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 80;
+    background: rgba(15, 15, 15, 0.85);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Faustina', serif;
+    font-size: 0.9em;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-message.active {
+    opacity: 1;
+}
+
+.controls button:disabled {
+    background: #666 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    opacity: 0.5;
+}
+
+.controls button:disabled:hover {
+    background: #666 !important;
+    transform: none !important;
 }
